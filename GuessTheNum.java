@@ -6,7 +6,6 @@ public class GuessTheNum {
 
     private static final Scanner scanner = new Scanner(System.in);
     private static final Random random = new Random();
-    private static int bestScore = Integer.MAX_VALUE;
 
     public static void main(String[] args) {
         while (true) {
@@ -15,12 +14,6 @@ public class GuessTheNum {
             int attemptLimit = askLimit();
 
             playRound(maxNumber, attemptLimit);
-
-            if (bestScore != Integer.MAX_VALUE) {
-                System.out.println("Рекорд: " + bestScore + " попыток.");
-            } else {
-                System.out.println("Рекорд отсутствует.");
-            }
 
             if (!askYesNo("Хотите сыграть снова? (y/n): ")) break;
         }
@@ -39,10 +32,6 @@ public class GuessTheNum {
 
             if (guess == secret) {
                 System.out.printf("Вы угадали! Число было %d. Количество попыток: %d.%n", secret, attempts);
-                if (attempts < bestScore) {
-                    bestScore = attempts;
-                    System.out.println("Новый рекорд!");
-                }
                 guessed = true;
             } else if (guess < secret) {
                 System.out.println("Слишком маленькое.");
