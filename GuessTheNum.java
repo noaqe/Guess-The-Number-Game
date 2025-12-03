@@ -1,88 +1,88 @@
 package org.example;
+
 import java.util.Random;
 import java.util.Scanner;
 
 public class GuessTheNum {
 
-    public static  Scanner scanner = new Scanner(System.in);
-    public static  Random random = new Random();
-
     public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+
         while (true) {
+
             System.out.println("=== Игра: Угадай число ===");
 
-            int maximum = SelectDifficulty();
-            int attempt = askLimit();
+            System.out.println("Выберите уровень сложности:");
+            System.out.println("1 - Лёгкий (1-50)");
+            System.out.println("2 - Средний (1-100)");
+            System.out.println("3 - Сложный (1-500)");
+            System.out.println("4 - Свой диапазон");
 
-            int hiddenNum = random.nextInt(maximum) + 1;
+            int maxNumber;
+
+            int difficulty = scanner.nextInt();
+            if (difficulty == 1) {
+                maxNumber = 50;
+            } else if (difficulty == 2) {
+                maxNumber = 100;
+            } else if (difficulty == 3) {
+                maxNumber = 500;
+            } else {
+                System.out.println("Введите максимальное число:");
+                maxNumber = scanner.nextInt();
+            }
+
+            System.out.println("Хотите ограничить количество попыток? (y/n)");
+            String limitAnswer = scanner.next();
+
+            int attemptLimit = -1;
+            if (limitAnswer.equalsIgnoreCase("y")) {
+                System.out.println("Введите количество попыток:");
+                attemptLimit = scanner.nextInt();
+            }
+
+            int hiddenNumber = random.nextInt(maxNumber) + 1;
+
             int attempts = 0;
             boolean guessed = false;
 
             while (!guessed) {
                 attempts++;
-                System.out.printf("Попытка %d%s. Введите число: ", attempts, (attempt > 0 ? " из " + attempt : ""));
-                int guess = readInt(1, maximum);
 
-                if (guess == hiddenNum) {
-                    System.out.printf("Вы угадали! Число было %d. Количество попыток: %d.%n", hiddenNum, attempts);
-                    guessed = true;
-                } else if (guess < hiddenNum) {
-                    System.out.println("Слишком маленькое.");
+                if (attemptLimit > 0) {
+                    System.out.println("Попытка " + attempts + " из " + attemptLimit);
                 } else {
-                    System.out.println("Слишком большое.");
+                    System.out.println("Попытка " + attempts);
                 }
 
+                System.out.println("Введите число:");
+                int guess = scanner.nextInt();
 
-                if (attempt > 0 && attempts >= attempt) {
-                    System.out.printf("Попытки закончились! Загаданное число было: %d.%n", hiddenNum);
+                if (guess == hiddenNumber) {
+                    System.out.println("Вы угадали! Число было " + hiddenNumber);
+                    guessed = true;
+                } else if (guess < hiddenNumber) {
+                    System.out.println("Слишком маленькое!");
+                } else {
+                    System.out.println("Слишком большое!");
+                }
+
+                if (attemptLimit > 0 && attempts >= attemptLimit && !guessed) {
+                    System.out.println("Попытки закончились! Число было: " + hiddenNumber);
                     break;
                 }
             }
 
-            if (!askYesNo("Хотите сыграть снова? (y/n): ")) break;
+            System.out.println("Хотите сыграть снова? (y/n)");
+            String again = scanner.next();
+
+            if (!again.equalsIgnoreCase("y")) {
+                break;
+            }
         }
 
         System.out.println("Спасибо за игру!");
     }
-
-    static int readInt(int min, int max) {
-        while (true) {
-            try {
-                int input = Integer.parseInt(scanner.nextLine());
-                if (input < min || input > max) {
-                    System.out.printf("Введите число от %d до %d.%n", min, max);
-                } else {
-                    return input;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Введите целое число.");
-            }
-        }
-    }
-
-     static int SelectDifficulty() {
-        System.out.println("Выберите уровень сложности: 1 - Лёгкий (1-50), 2 - Средний (1-100), 3 - Сложный (1-500), 4 - Свой диапазон.");
-        int choice = readInt(1, 4);
-        switch (choice) {
-            case 1: return 50;
-            case 2: return 100;
-            case 3: return 500;
-            case 4: return readInt(2, Integer.MAX_VALUE);
-            default: return 50;
-        }
-    }
-
-     static int askLimit() {
-        System.out.print("Ограничить количество попыток? (y/n): ");
-        return askYesNo("y") ? readInt(1, Integer.MAX_VALUE) : -1;
-    }
-
-     static boolean askYesNo(String prompt) {
-        String answer = scanner.nextLine().trim().toLowerCase();
-        return answer.equals("y") || answer.equals("да");
-    }
 }
-
-
-
-
